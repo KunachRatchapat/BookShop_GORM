@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
@@ -53,10 +54,27 @@ func updateBooks(db *gorm.DB, book *Book) {
 // Delete Books
 func deleteBooks(db *gorm.DB, id uint) {
 	var book Book
-	result := db.  Delete(&book, id)
+	result := db.Delete(&book, id)
 	if result.Error != nil {
 		log.Fatal("Error deleting book: %v ", result.Error)
 	}
 
 	fmt.Println("Book Delete Successful !")
+}
+
+//SearchBooks
+func searchBooks(db *gorm.DB, infobook string) *Book {
+	var book Book
+
+	result := db.Where("author = ?",infobook).First(&book)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound){	
+			//Not fount Book
+			return nil
+		}
+		//Error Connection 
+		log.Fatalf("เกิดข้อผิดพลาด:%v",result.Error)
+	}
+	return &book
+
 }

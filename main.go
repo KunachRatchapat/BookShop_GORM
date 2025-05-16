@@ -53,25 +53,37 @@ func main(){
 
 	//Start CreateBook
 	/*newBooks := &Book{
-		Author: "Harper Lee2",
-		Description:"Racism and justice in the South" ,
-		Price:  359,
-		Publisher: "J.B. Lippincott & Co.",
+		Author: "J.R.R. Tolkien",
+		Description:"Fantasy epic of hobbits and rings" ,
+		Price:  599,
+		Publisher: "Allen & Unwin",
 	}
 
 	//Use Func createBook
 	createBook(db,newBooks) //Create INSERT(book) and Struct Book(newbooks)*/
 
 	//Usefunc GetBoks
-	/*currentbook := getsBooks(db,2)
+	/*currentbook := getsBooks(db,8)
 	
 
-	currentbook.Author = "J.K. Rowling Wizard2"
+	currentbook.Author = "Yuval Noah Harari"
+	currentbook.Description = "Brief history of humankind"
+	currentbook.Price = 469
+	currentbook.Publisher ="Harvill Secker"
 	updateBooks(db,currentbook)*/
 	
 	//Delete Func
 	//deleteBooks(db,4)
-	
-	
+
+	//SearchBooks
+	search := searchBooks(db,"Mary Shelley")
+	if search != nil{
+		fmt.Printf("Book is Found : %v\n",search)
+
+	}else{
+		fmt.Println("Not Found Book !")
+	}
+
+		
 
 }
