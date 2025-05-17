@@ -58,15 +58,19 @@ func deleteBooks(db *gorm.DB, id uint) {
 	if result.Error != nil {
 		log.Fatal("Error deleting book: %v ", result.Error)
 	}
+	//Found BookID
+	if result.RowsAffected == 0 {
+		fmt.Println("Not Found ID BOOK")
+	}
 
 	fmt.Println("Book Delete Successful !")
 }
 
-//SearchBooks
-func searchBooks(db *gorm.DB, infobook string) *Book {
-	var book Book
+//SearchBooksฺBy AuthorName
+func searchBookByAuthor(db *gorm.DB, authorbook string) []Book {
+	var book []Book
 
-	result := db.Where("author = ?",infobook).First(&book)
+	result := db.Where("author = ?",authorbook).Order("price").Find(&book)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound){	
 			//Not fount Book
@@ -75,6 +79,25 @@ func searchBooks(db *gorm.DB, infobook string) *Book {
 		//Error Connection 
 		log.Fatalf("เกิดข้อผิดพลาด:%v",result.Error)
 	}
-	return &book
+	return book 
 
 }
+
+//SearchBooksBy Price
+func searchBooksByPrice(db *gorm.DB, pricebook string) []Book {
+	var book []Book
+
+	result := db.Order("price").Find(&book)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound){	
+			//Not fount Book
+			return nil
+		}
+		//Error Connection 
+		log.Fatalf("เกิดข้อผิดพลาด:%v",result.Error)
+	}
+	return book 
+
+}
+
+

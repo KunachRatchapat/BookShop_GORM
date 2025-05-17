@@ -53,10 +53,10 @@ func main(){
 
 	//Start CreateBook
 	/*newBooks := &Book{
-		Author: "J.R.R. Tolkien",
-		Description:"Fantasy epic of hobbits and rings" ,
+		Author: "Mary Shelley",
+		Description:"A scientist creates a monster2" ,
 		Price:  599,
-		Publisher: "Allen & Unwin",
+		Publisher: "Lackington, Hughes, Harding",
 	}
 
 	//Use Func createBook
@@ -76,7 +76,7 @@ func main(){
 	//deleteBooks(db,4)
 
 	//SearchBooks
-	search := searchBooks(db,"Mary Shelley")
+	search := searchBookByAuthor(db,"Mary Shelley")
 	if search != nil{
 		fmt.Printf("Book is Found : %v\n",search)
 
