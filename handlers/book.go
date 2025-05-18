@@ -32,7 +32,7 @@ func GetsOneBook(db *gorm.DB) fiber.Handler {
 	}
 	var book model.Book
 	db.First(&book,id)
-	
+
 	//JSON Send to Client
 	return c.JSON(book)
 	}	
@@ -49,7 +49,26 @@ func GetAllBooks(db *gorm.DB) fiber.Handler {
 	}
 }	
 
-//
+//Update Book
+func UpdateBooks(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error{
+		//Get ID 
+		id := c.Params("id")
+
+		//String To int
+		bookId , err := strconv.Atoi("id")
+		if err != nil{
+			return c.Status(fiber.ErrBadRequest.Code).JSON(fiber.Map{
+				"error":"Invalid ID !",
+			})
+		}
+
+			
+
+		
+		
+	}
+}
 
 
 
