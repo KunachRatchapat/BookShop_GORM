@@ -13,7 +13,8 @@ func RouteInit(r *fiber.App , db *gorm.DB) {
 	r.Post("/addbooks",handlers.CreateBook(db))
 	r.Get("/books/:id",handlers.GetsOneBook(db))
 	r.Get("/books",handlers.GetAllBooks(db))
-	r.Put("/books",)
+	r.Put("/books/:id",handlers.UpdateBooks(db))
+	r.Delete("/books/:id",handlers.DeleteBook(db))
 
 
 }
