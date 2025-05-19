@@ -19,7 +19,7 @@ func main(){
 	}
 
 	db := database.ConnectDB()
-	db.AutoMigrate(&model.Book{})
+	db.AutoMigrate(&model.Book{},&model.User{})
 
 	//Setup Server
 	app := fiber.New()
