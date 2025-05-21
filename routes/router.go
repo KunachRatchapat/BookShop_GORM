@@ -1,8 +1,6 @@
 package routes
 
 import (
-	
-
 	"github.com/KunachRatchapat/BookShop_GORM/handlers"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -23,7 +21,7 @@ func RouteInit(r *fiber.App , db *gorm.DB) {
 	r.Post("/register",handlers.CreateUser(db))
 
 	//Endpoint Login
-	r.Post("/login",handlers.LoginUser())
+	r.Post("/login", handlers.LoginUser(db))
 
 
 }

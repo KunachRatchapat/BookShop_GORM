@@ -42,44 +42,52 @@ func CreateUser(db *gorm.DB)  fiber.Handler{
 	
 }
 
-func LoginUser(db *gorm.DB, user *model.User) fiber.Handler{
+func LoginUser(db *gorm.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 
-		//Get User From Email
-		selectUser := new(model.User)
-		result := db.Where("email = ?" ,user.Email).First(selectUser)
-		if result.Error != nil{
-			return c.JSON(fiber.Map{
-				"Error":"No Email In Database !",
+		// อ่านค่าจาก body
+		user := new(model.User)
+		if err := c.BodyParser(user); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": "Invalid input!",
 			})
 		}
-		
-		//comapare Password
-		err := bcrypt.CompareHashAndPassword(
-			[]byte(selectUser.Password), //From, Client
-			[]byte(user.Password), //Inside DB
-	)
-		if err != nil {
-			return c.JSON(fiber.Map{
-				"Error":"Login Unsuccess !",
-			}) 
+
+		// ค้นหา email ใน DB
+		selectUser := new(model.User)
+		result := db.Where("email = ?", user.Email).First(selectUser)
+		if result.Error != nil {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "No Email In Database!",
+			})
 		}
 
-	// Create JWT
-	token := jwt.New(jwt.SigningMethodHS256)
-  	claims := token.Claims.(jwt.MapClaims)
-  	claims["user_id"] = selectUser.ID
-  	claims["exp"] = time.Now().Add(time.Hour * 720).Unix()
+		// เปรียบเทียบรหัสผ่าน
+		err := bcrypt.CompareHashAndPassword(
+			[]byte(selectUser.Password),  // hashed ใน DB
+			[]byte(user.Password),        // plain text ที่ผู้ใช้ส่งมา
+		)
+		if err != nil {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "Incorrect password!",
+			})
+		}
 
-	t , err := token.SignedString([]byte(os.Getenv("jwtSecretKey")))
+		// สร้าง JWT
+		token := jwt.New(jwt.SigningMethodHS256)
+		claims := token.Claims.(jwt.MapClaims)
+		claims["user_id"] = selectUser.ID
+		claims["exp"] = time.Now().Add(time.Hour * 720).Unix()
 
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString("No Token !")
-		
+		t, err := token.SignedString([]byte(os.Getenv("jwtSecretKey")))
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString("Failed to generate token!")
+		}
+
+		// ส่ง response กลับ
+		return c.JSON(fiber.Map{
+			"message": "Login Success!",
+			"token":   t,
+		})
 	}
-	return c.JSON(fiber.Map{
-		"message":"Login Success",
-		"token":t,
-	})
-  }
 }
